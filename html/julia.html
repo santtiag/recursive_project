@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Julia Set in JavaScript</title>
+    <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/code.css">
+    <link rel="stylesheet" href="../css/structure.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navegation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Fractales</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./mandelbrot.html">Mandelbrot</a></li>
+                <li><a href="./julia.html">Julia</a></li>
+                <li><a href="./barnsley.html">Barnsley</a></li>
+            </ul>
+            <div class="social-links">
+                <a target="_blank" class="fa" href="https://www.instagram.com/romero_code/?next=%2F">&#xf16d;</a>
+                <a target="_blank" class="fa" href="https://github.com/santtiag">&#xf09b;</a>
+                <a target="_blank" class="fa" href="https://www.youtube.com/@romero_code">&#xf16a;</a>
+                <a target="_blank" class="fa" href="https://twitter.com/_santtiag">&#xf099;</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="content-fractal">
+        <h1>Conjunto de Julia</h1>
+        <canvas id="juliaCanvas" width="480" height="320"></canvas>
+
+        <div style="width: 60rem; text-align: justify;">
+            <p>El conjunto de Julia es otro tipo de fractal, similar al conjunto de Mandelbrot, pero con un
+                comportamiento aún más complejo y dinámico. Se define a partir de una función matemática simple y un
+                valor constante "c", lo que genera una gran variedad de formas y patrones.</p>
+
+            <h2>¿Cómo funciona? (Matemáticamente)</h2>
+            <p>Función iterativa: Se comienza con un punto "z" en el plano complejo. Se aplica la misma función que en
+                el conjunto de Mandelbrot, pero con un valor constante "c" fijo:</p>
+            <code>Z<sub>n+1</sub> = Z<sub>n</sub><sup>2</sup> + c</code>
+            <p>Donde:</p>
+            <ul>
+                <li>Z<sub>n+1</sub> es el nuevo punto</li>
+                <li>Z<sub>n</sub> es el punto anterior</li>
+                <li>c es el valor constante</li>
+            </ul>
+
+            <p>Convergencia vs Divergencia: Al igual que en el conjunto de Mandelbrot, se observa el comportamiento de
+                la secuencia de puntos Z<sub>n</sub>. Si la secuencia converge a un valor finito, el punto "z" se
+                considera parte del conjunto de Julia para el valor "c" elegido. Si la secuencia diverge hacia el
+                infinito, "z" no pertenece al conjunto.</p>
+
+            <h3>Parámetros:</h3>
+            <ul>
+                <li>Valor constante "c": El valor de "c" determina la forma específica del conjunto de Julia. Diferentes
+                    valores de "c" generan una gran variedad de patrones, desde formas simples hasta estructuras
+                    intrincadas y caóticas.</li>
+                <li>Punto inicial "z": El punto inicial "z" también puede afectar la forma del conjunto de Julia,
+                    especialmente en áreas donde la dinámica es más sensible.</li>
+            </ul>
+
+            <h3>Características:</h3>
+            <ul>
+                <li>El conjunto de Julia puede ser compacto o no compacto, dependiendo del valor de "c".</li>
+                <li>Posee una frontera fractal compleja y rica en detalles.</li>
+                <li>Es un sistema dinámico, lo que significa que su comportamiento puede cambiar con el tiempo y mostrar
+                    diferentes patrones.</li>
+            </ul>
+
+            <h2>¿Cómo funciona? (Código) </h2>
+            <p>Este código en JavaScript genera una representación del fractal de Julia en un elemento canvas de
+                HTML.</p>
+
+            <pre>
+                <code>
+const canvas = document.getElementById('juliaCanvas');
+const ctx = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+const max_iter = 256;
+const c = { x: -0.7, y: 0.27015 };
+
+function julia(z, c, n = 0) {
+    if (n >= max_iter) {
+        return max_iter;
+    }
+
+    const z_next = {
+        x: z.x * z.x - z.y * z.y + c.x,
+        y: 2 * z.x * z.y + c.y
+    };
+
+    if (z_next.x * z_next.x + z_next.y * z_next.y > 4) {
+        return n;
+    }
+
+    return julia(z_next, c, n + 1);
+}
+
+function drawJuliaPixel(x, y) {
+    const min_x = -1.5, max_x = 1.5;
+    const min_y = -1.5, max_y = 1.5;
+    const z = {
+        x: min_x + (x / width) * (max_x - min_x),
+        y: min_y + (y / height) * (max_y - min_y)
+    };
+    const m = julia(z, c);
+    const color = m === max_iter ? 0 : 255 - Math.floor(255 * m / max_iter);
+    ctx.fillStyle = `rgb(${color}, 0, 0)`;
+    ctx.fillRect(x, y, 1, 1);
+}
+
+function drawJuliaRow(y) {
+    if (y >= height) {
+        return;
+    }
+
+    for (let x = 0; x < width; x++) {
+        drawJuliaPixel(x, y);
+    }
+
+    requestAnimationFrame(() => drawJuliaRow(y + 1));
+}
+
+drawJuliaRow(0);
+                </code>
+            </pre>
+
+            <h3>Inicialización del Canvas:</h3>
+            <p>
+                <code>const canvas = document.getElementById('juliaCanvas');</code><br>
+                Selecciona el elemento canvas del DOM.
+            </p>
+            <p>
+                <code>const ctx = canvas.getContext('2d');</code><br>
+                Obtiene el contexto de dibujo 2D para el canvas, que se utiliza para pintar en él.
+            </p>
+            <p>
+                <code>const width = canvas.width;</code><br>
+                <code>const height = canvas.height;</code><br>
+                Almacena las dimensiones del canvas para su uso posterior.
+            </p>
+
+            <h3>Configuración del Fractal:</h3>
+            <p>
+                <code>const max_iter = 256;</code><br>
+                Define el número máximo de iteraciones para cada punto del fractal.
+            </p>
+            <p>
+                <code>const c = { x: -0.7, y: 0.27015 };</code><br>
+                Define la constante compleja c que se utiliza en la fórmula para generar el fractal de Julia. Este valor
+                es específico para cada tipo diferente de fractal de Julia.
+            </p>
+
+            <h3>Función julia(z, c, n = 0):</h3>
+            <ul>
+                <li>Realiza el cálculo recursivo para determinar si el punto z (un número complejo) permanece acotado
+                    (no se escapa) en la secuencia definida por la función de Julia.</li>
+                <li>n es el contador de iteraciones que se incrementa en cada llamada recursiva.</li>
+                <li>Si z se escapa del límite definido (su magnitud al cuadrado se vuelve mayor que 4), la función
+                    retorna el número de iteraciones realizadas hasta ese punto.</li>
+                <li>Si n alcanza max_iter, se considera que z está dentro del conjunto de Julia y la función retorna
+                    max_iter.</li>
+            </ul>
+
+            <h3>Función drawJuliaPixel(x, y):</h3>
+            <ul>
+                <li>Dibuja un píxel en la posición (x, y) del canvas.</li>
+                <li>Convierte las coordenadas de píxel a un punto z en el plano complejo.</li>
+                <li>Llama a julia(z, c) para calcular cuántas iteraciones se necesitan antes de que z escape del
+                    conjunto (si es que lo hace).</li>
+                <li>El color del píxel se determina por el número de iteraciones: los puntos dentro del conjunto se
+                    colorean típicamente de negro, y los puntos fuera se colorean con un gradiente (en este caso, en
+                    tonos de rojo).</li>
+            </ul>
+
+            <h3>Función drawJuliaRow(y):</h3>
+            <ul>
+                <li>Dibuja una fila de píxeles en la posición y.</li>
+                <li>Itera a través de cada x en esa fila y llama a drawJuliaPixel(x, y) para pintar cada píxel.</li>
+                <li>Utiliza requestAnimationFrame() para dibujar cada fila secuencialmente, lo que ayuda a suavizar la
+                    animación y evita bloquear el navegador.</li>
+            </ul>
+
+            <h3>Inicio del proceso de dibujo:</h3>
+            <p><code>drawJuliaRow(0);</code></p>
+            <p>Inicia el proceso de dibujo con la primera fila de píxeles en el canvas.</p>
+
+            <h2>Rendimiento</h2>
+
+            <p>Se uso la interfaz de la herramienta de desarrollo del navegador Chrome, específicamente la pestaña de
+                "Performance" durante una sesión de perfilado (profile) de rendimiento. </p>
+
+
+            <img src="../media/perform_julia.png" alt="">
+
+            <h3>Tiempo Total de la Evaluación de Rendimiento:</h3>
+            <p>La grabación es de nuevo de alrededor de 5.16 segundos.</p>
+
+            <h3>Carga (Loading):</h3>
+            <p>5 ms</p>
+
+            <h3>Scripting:</h3>
+            <p>902 ms, que es el tiempo dedicado a ejecutar scripts, y en este caso, es donde se calcula el fractal de
+                Julia, añadiendo a eso, este fractal es más complejo de renderizar por la complejidad que tiene a
+                comparación del fractal de Mandelbrot.</p>
+
+            <h3>Renderizado (Rendering):</h3>
+            <p>60 ms</p>
+
+            <h3>Pintado (Painting):</h3>
+            <p>114 ms, que es el tiempo para pintar los resultados en la pantalla.</p>
+
+            <h3>Sistema (System):</h3>
+            <p>188 ms, que podría incluir el tiempo de procesamiento que no está directamente relacionado con la página
+                web.</p>
+
+            <h3>Inactivo (Idle):</h3>
+            <p>3894 ms, indicando el tiempo en el que el navegador no está procesando ningún trabajo para la página.</p>
+
+            <h3>Carga de Trabajo del Hilo Principal:</h3>
+            <p>Los bloques de colores en la línea de tiempo sugieren una intensa actividad de scripting, posiblemente
+                debido a los cálculos del fractal, seguido por períodos de renderizado y pintado, esto pasa al igual en
+                el fractal de Mandelbrot por las múltiples funciones que se ejecutan dependiendo de las condiciones y de
+                los llamados. La densidad y longitud de estos bloques sugieren que el navegador está dedicando una
+                cantidad considerable de tiempo y recursos a estas tareas.</p>
+
+            <br>
+            <h2>Mejoras</h2>
+            <h3>Optimización de cálculos matemáticos:</h3>
+            <p>Reducir la frecuencia de operaciones costosas. Por ejemplo, calcular z.x * z.x y z.y * z.y una vez por
+                iteración y reutilizarlos.</p>
+
+            <h3>Uso de ImageData:</h3>
+            <p>En lugar de dibujar píxeles individuales con fillRect, usar ImageData para actualizar el canvas en
+                bloque. Esto minimiza las operaciones de dibujo y puede mejorar significativamente el rendimiento.</p>
+
+            <h3>Pre-calculación de valores:</h3>
+            <p>Pre-calcular y almacenar factores y rangos utilizados en las transformaciones de coordenadas dentro de
+                drawJuliaPixel para evitar cálculos repetitivos.</p>
+
+            <h3>Throttling del redibujo:</h3>
+            <p>Utilizar requestAnimationFrame de manera efectiva para limitar el número de veces que se redibuja el
+                canvas y garantizar que se dibuje a una velocidad que coincida con el rendimiento del dispositivo.</p>
+
+            <h3>Web Workers para cálculos pesados:</h3>
+            <p>Mover cálculos intensivos al fondo utilizando Web Workers, permitiendo un procesamiento paralelo y
+                evitando bloquear la interfaz de usuario.</p>
+
+            <h3>Revisión de la condición de escape:</h3>
+            <p>Revisar la lógica de escape en la función julia para ver si se puede optimizar y reducir el número de
+                iteraciones necesarias para determinar si un punto escapa.</p>
+
+            <h3>Optimización del número de iteraciones (max_iter):</h3>
+            <p>Ajustar max_iter según el nivel de detalle y zoom del fractal. A veces, se pueden obtener buenos
+                resultados visuales con menos iteraciones.</p>
+
+            <h3>Ajuste dinámico de la resolución:</h3>
+            <p>Para vistas previas o durante el zoom, usar una resolución más baja y aumentarla para el dibujo final, lo
+                que puede mejorar la respuesta durante la interacción del usuario.</p>
+            <br>
+            <br>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-section">
+            <h3>Docs</h3>
+            <ul>
+                <li><a href="./requirements.html">Requerimientos</a></li>
+                <li><a href="./narration.html">Narración</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Community</h3>
+            <ul>
+                <li><a target="_blank" href="https://cecar.edu.co/">CECAR</a></li>
+                <li><a href="./bibliografia.html">Bibliografía</a></li>
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 santtiag, Inc. Built with Docusaurus.</p>
+        </div>
+    </footer>
+
+
+    <script src="../js/julia.js"></script>
+</body>
+</html>

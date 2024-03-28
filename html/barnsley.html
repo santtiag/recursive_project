@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Barnsley Fern in JavaScript</title>
+    <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/code.css">
+    <link rel="stylesheet" href="../css/structure.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navegation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Fractales</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./mandelbrot.html">Mandelbrot</a></li>
+                <li><a href="./julia.html">Julia</a></li>
+                <li><a href="./barnsley.html">Barnsley</a></li>
+            </ul>
+            <div class="social-links">
+                <a target="_blank" class="fa" href="https://www.instagram.com/romero_code/?next=%2F">&#xf16d;</a>
+                <a target="_blank" class="fa" href="https://github.com/santtiag">&#xf09b;</a>
+                <a target="_blank" class="fa" href="https://www.youtube.com/@romero_code">&#xf16a;</a>
+                <a target="_blank" class="fa" href="https://twitter.com/_santtiag">&#xf099;</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="content-fractal">
+        <h1>Helecho de Barnsley</h1>
+        <canvas id="barnsleyCanvas" width="600" height="600"></canvas>
+        <div style="width: 60rem; text-align: justify;">
+            <p>El helecho de Barnsley, también conocido como helecho de Barnely o helecho fractal, es un tipo de fractal
+                que se asemeja a la forma de un helecho real. Se crea a partir de un sistema de ecuaciones iterativas
+                que transforma un punto en otro, generando una estructura ramificada y autosimilar a diferentes escalas.
+            </p>
+
+            <h2>¿Cómo funciona? (Matemáticamente)</h2>
+            <p>Sistema de ecuaciones: El helecho de Barnsley se define por un sistema de dos ecuaciones:</p>
+            <code>Ecuación 1: X<sub>n+1</sub> = 0.85X<sub>n</sub> + 0.04Y<sub>n</sub></code>
+            <br>
+            <code>Ecuación 2: Y<sub>n+1</sub> = -0.04X<sub>n</sub> + 0.85Y<sub>n</sub></code>
+            <p>Donde:</p>
+            <ul>
+                <li>X<sub>n+1</sub> e Y<sub>n+1</sub> son las coordenadas del nuevo punto</li>
+                <li>X<sub>n</sub> e Y<sub>n</sub> son las coordenadas del punto actual</li>
+            </ul>
+
+            <p>Iteración: Se comienza con un punto inicial (X<sub>0</sub>, Y<sub>0</sub>) y se aplican las ecuaciones 1
+                y 2 de forma repetitiva. La secuencia de puntos resultantes forma una curva que se asemeja a la forma de
+                un helecho.</p>
+
+            <h3>Parámetros:</h3>
+            <p>El sistema de ecuaciones del helecho de Barnsley tiene dos parámetros que pueden modificarse para ajustar
+                la forma del fractal:</p>
+            <ul>
+                <li>Factor de escala (0.85): Controla el tamaño general del helecho.</li>
+                <li>Factor de rotación (0.04): Controla la orientación de las ramas del helecho.</li>
+            </ul>
+
+            <h3>Características:</h3>
+            <ul>
+                <li>El helecho de Barnsley es un fractal determinista, lo que significa que se genera a partir de un
+                    conjunto de reglas matemáticas bien definidas.</li>
+                <li>Posee una estructura autosimilar, es decir, se asemeja a sí mismo a diferentes escalas.</li>
+                <li>Tiene una frontera infinita con una complejidad fractal notable.</li>
+            </ul>
+            <h2>¿Cómo funciona? (Código)</h2>
+            <p>Este código en JavaScript genera una representación del fractal de Darnsley en un elemento canvas de
+                HTML. </p>
+            <pre>
+                <code>
+const canvas = document.getElementById('barnsleyCanvas');
+const ctx = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+
+function barnsleyFern(x, y, depth) {
+    if (depth === 0) return;
+
+    const r = Math.random();
+    let nextX, nextY;
+
+    if (r < 0.01) {
+        nextX = 0;
+        nextY = 0.16 * y;
+    } else if (r < 0.86) {
+        nextX = 0.85 * x + 0.04 * y;
+        nextY = -0.04 * x + 0.85 * y + 1.6;
+    } else if (r < 0.93) {
+        nextX = 0.2 * x - 0.26 * y;
+        nextY = 0.23 * x + 0.22 * y + 1.6;
+    } else {
+        nextX = -0.15 * x + 0.28 * y;
+        nextY = 0.26 * x + 0.24 * y + 0.44;
+    }
+
+    const plotX = width / 2 + nextX * width / 10;
+    const plotY = height - nextY * height / 12;
+
+    ctx.fillStyle = 'green';
+    ctx.fillRect(plotX, plotY, 1, 1);
+
+    barnsleyFern(nextX, nextY, depth - 1);
+}
+
+barnsleyFern(0, 0, 5000);  
+                </code>
+            </pre>
+            <h3>Inicialización del lienzo (canvas):</h3>
+            <p>const canvas = document.getElementById('barnsleyCanvas');</p>
+            <ul>
+                <li>Selecciona el elemento canvas del DOM por su ID barnsleyCanvas.</li>
+            </ul>
+            <p>const ctx = canvas.getContext('2d');</p>
+            <ul>
+                <li>Obtiene el contexto de dibujo 2D para el canvas, que permite realizar operaciones de dibujo.</li>
+            </ul>
+            <p>const width = canvas.width;</p>
+            <p>const height = canvas.height;</p>
+            <ul>
+                <li>Obtiene las dimensiones del canvas para usarlas en el cálculo de la posición de los puntos.</li>
+            </ul>
+
+            <h3>Función barnsleyFern(x, y, depth):</h3>
+            <ul>
+                <li>Es la función recursiva que dibuja el helecho. Utiliza las coordenadas (x, y) y un parámetro depth
+                    que determina el número de iteraciones o la "profundidad" de la recursión.</li>
+            </ul>
+            <p>if (depth === 0) return;</p>
+            <ul>
+                <li>Termina la recursión cuando se alcanza la profundidad especificada.</li>
+            </ul>
+            <p>const r = Math.random();</p>
+            <ul>
+                <li>Genera un número aleatorio entre 0 y 1 para decidir qué transformación aplicar a las coordenadas (x,
+                    y).</li>
+            </ul>
+
+            <h3>Transformaciones:</h3>
+            <ul>
+                <li>El código define cuatro transformaciones lineales que se aplican a las coordenadas (x, y) para
+                    generar los puntos del helecho. La elección de la transformación depende del valor de r.</li>
+                <li>Cada bloque de condición (if-else) representa una de las transformaciones del helecho de Barnsley,
+                    con probabilidades específicas que imitan el crecimiento natural de un helecho.</li>
+            </ul>
+
+            <h3>Dibujando el punto:</h3>
+            <p>const plotX = width / 2 + nextX * width / 10;</p>
+            <p>const plotY = height - nextY * height / 12;</p>
+            <ul>
+                <li>Calcula las coordenadas del píxel en el canvas para el punto generado por las transformaciones.</li>
+            </ul>
+            <p>ctx.fillStyle = 'green';</p>
+            <p>ctx.fillRect(plotX, plotY, 1, 1);</p>
+            <ul>
+                <li>Establece el color del punto a verde y dibuja un pequeño rectángulo (píxel) en las coordenadas
+                    calculadas.</li>
+            </ul>
+
+            <h3>Recursión:</h3>
+            <p>barnsleyFern(nextX, nextY, depth - 1);</p>
+            <ul>
+                <li>Llama a barnsleyFern de forma recursiva para el siguiente punto, reduciendo la profundidad en 1.
+                </li>
+            </ul>
+
+            <h3>Inicio del dibujo:</h3>
+            <p>barnsleyFern(0, 0, 5000);</p>
+            <ul>
+                <li>Inicia el dibujo del fractal con un punto de inicio (0, 0) y una profundidad de recursión de 5000.
+                </li>
+            </ul>
+
+            <h2>Rendimiento</h2>
+            <p>Se uso la interfaz de la herramienta de desarrollo del navegador Chrome, específicamente la pestaña de
+                "Performance" durante una sesión de perfilado (profile) de rendimiento. </p>
+
+            <img src="../media/perform_barnsley.png" alt="">
+
+            <h3>Archivo barnsley.js</h3>
+            <p>Se centra más en el archivo barnsley.js ya que este solo tiene una sola función al contrario de los otros
+                fractales que tenían múltiples funciones.</p>
+
+            <h3>Tiempo de Evaluación (script):</h3>
+            <p>La grabación de rendimiento es mucho más corta que las anteriores, con un total aproximado de 2.1
+                segundos, este es el tiempo que tarda el archivo encargado de calcular el fractal de barnsley.</p>
+
+            <h3>Scripting:</h3>
+            <p>Un tiempo muy bajo de 12.29 ms, lo que indica que los cálculos y el manejo del script son muy eficientes.
+            </p>
+            <p>Sistema: 2 ms, que es casi despreciable.</p>
+
+            <h3>Main Thread:</h3>
+            <p>Hay muy poca actividad en el hilo principal, con solo un breve pico de ejecución de script al principio,
+                y luego el hilo principal parece estar mayormente inactivo.</p>
+
+            <h3>Tiempo Propio (Self Time):</h3>
+            <p>Solo 74 µs, que es la cantidad de tiempo que el script pasa ejecutando código fuera de cualquier llamada
+                a funciones.</p>
+
+            <p>Este fractal es mucho menos exigente en términos de procesamiento y pintado en comparación con
+                los fractales de Mandelbrot y Julia que se evaluaron anteriormente. Aunque, el fractal de helecho de
+                Barnsley es conocido por ser relativamente simple en términos de cálculos iterativos, lo que puede ser
+                la razón de su baja demanda de recursos.</p>
+            <br>
+            <h2>Mejoras</h2>
+            <p>Este código de helecho de Barnsley es bastante eficiente en su enfoque básico, pero siempre hay espacio
+                para optimizaciones y mejoras, especialmente para adaptarlo a diferentes contextos de uso o para hacerlo
+                más versátil y eficiente:</p>
+
+            <h3>Evitar la recursividad profunda:</h3>
+            <p>La recursividad profunda puede llevar a un desbordamiento de la pila en algunos casos. Convertir el
+                proceso recursivo en un bucle iterativo podría prevenir este riesgo y manejar grandes números de
+                iteraciones más eficientemente.</p>
+
+            <h3>Uso de requestAnimationFrame:</h3>
+            <p>Para animaciones o para dibujar grandes cantidades de puntos, usar requestAnimationFrame puede mejorar el
+                rendimiento al sincronizar el renderizado con el refresco del navegador, evitando el trabajo
+                innecesario.</p>
+
+            <h3>Batching de operaciones de dibujo:</h3>
+            <p>En lugar de dibujar cada punto individualmente, se podrían acumular varios puntos y dibujarlos en lotes
+                utilizando ctx.putImageData, lo cual puede ser más eficiente.</p>
+
+            <h3>Ajuste dinámico de la profundidad de la iteración:</h3>
+            <p>Dependiendo del nivel de detalle deseado o del tamaño del canvas, podría ser útil ajustar dinámicamente
+                el número de iteraciones (profundidad) para optimizar el rendimiento y la calidad visual.</p>
+
+            <h3>Uso de escalado de resolución:</h3>
+            <p>Para mejorar el rendimiento, especialmente en dispositivos con menos capacidad de procesamiento, se
+                podría dibujar el fractal en un canvas de menor resolución y luego escalarlo al tamaño deseado.</p>
+
+            <h3>Interactividad y redibujado eficiente:</h3>
+            <p>Si el fractal debe ser interactivo (por ejemplo, permitiendo al usuario cambiar los parámetros del
+                fractal en tiempo real), se debe asegurar que solo se redibuje cuando sea necesario, evitando el
+                redibujado constante.</p>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <footer class="footer">
+        <div class="footer-section">
+            <h3>Docs</h3>
+            <ul>
+                <li><a href="./requirements.html">Requerimientos</a></li>
+                <li><a href="./narration.html">Narración</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Community</h3>
+            <ul>
+                <li><a target="_blank" href="https://cecar.edu.co/">CECAR</a></li>
+                <li><a href="./bibliografia.html">Bibliografía</a></li>
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 santtiag, Inc. Built with Docusaurus.</p>
+        </div>
+    </footer>
+
+
+
+    <script src="../js/barnsley.js">
+    </script>
+</body>
+
+</html>

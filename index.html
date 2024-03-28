@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barra de Navegación Minimalista</title>
+    <link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Navegation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Fractales</div>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="html/mandelbrot.html">Mandelbrot</a></li>
+                <li><a href="html/julia.html">Julia</a></li>
+                <li><a href="html/barnsley.html">Barnsley</a></li>
+            </ul>
+            <div class="social-links">
+                <a target="_blank" class="fa" href="https://www.instagram.com/romero_code/?next=%2F">&#xf16d;</a>
+                <a target="_blank" class="fa" href="https://github.com/santtiag">&#xf09b;</a>
+                <a target="_blank" class="fa" href="https://www.youtube.com/@romero_code">&#xf16a;</a>
+                <a target="_blank" class="fa" href="https://twitter.com/_santtiag">&#xf099;</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Carrusel -->
+    <section class="container">
+        <div class="slider-wrapper">
+            <div class="slider">
+                <img id="slide-1" src="media/conjunto_de_mandelbrot.gif" alt="image_1">
+                <img id="slide-2" src="media/conjunto_de_julia.gif" alt="image_2">
+                <img id="slide-3" src="media/barnsley_fern.gif" alt="image_3">
+            </div>
+            <div class="slider-nav">
+                <a href="#slide-1"></a>
+                <a href="#slide-2"></a>
+                <a href="#slide-3"></a>
+            </div>
+        </div>
+    </section>
+
+    <div class="content-text">
+        <h1>Belleza Matemática con Aplicaciones Infinitas</h1>
+        <div style="width: 60rem; text-align: justify;">
+            <h2>¿Qué son los fractales?</h2>
+            <p>
+                Los fractales son objetos geométricos complejos que se caracterizan por dos propiedades clave:
+            </p>
+            <ul>
+                <li>
+                    <strong>Autosimilitud:</strong> Se repiten a sí mismos a diferentes escalas. En otras palabras, una
+                    pequeña porción del fractal contiene información sobre la estructura completa.
+                </li>
+                <li>
+                    <strong>Dimensión fractal:</strong> Poseen una dimensión no entera, lo que significa que son más
+                    complejos que las formas geométricas tradicionales como las líneas, cuadrados o cubos.
+                </li>
+            </ul>
+            <p>Ejemplos de fractales:</p>
+            <ul>
+                <li>
+                    <strong><a href="./html/mandelbrot.html">El conjunto de Mandelbrot:</a></strong> Un conjunto de
+                    puntos infinitos que se define a través
+                    de una simple ecuación matemática. Es famoso por sus patrones infinitamente complejos y coloridos.
+                </li>
+                <li>
+                    <strong><a href="./html/julia.html">El conjunto de Julia:</a></strong> Se define a partir de una
+                    función polinomial de segundo grado, la cual se aplica de forma iterativa a un punto inicial dentro
+                    del plano complejo.
+                </li>
+                </li>
+                <li>
+                    <strong><a href="./html/barnsley.html">El helecho de Barnsley:</a></strong> Se genera mediante un
+                    conjunto de reglas matemáticas que
+                    determinan dónde se coloca cada nuevo punto en el fractal.
+                </li>
+            </ul>
+            <h2>Relación con la programación:</h2>
+            <p>
+                Los fractales tienen una estrecha relación con la programación debido a su naturaleza matemática y su
+                capacidad para ser representados en código. Algunos ejemplos de cómo se usan en programación son:
+            </p>
+            <ul>
+                <li><strong>Generación de imágenes:</strong> Los fractales se pueden usar para crear imágenes realistas
+                    de paisajes,
+                    plantas, nubes y otros objetos naturales.</li>
+                <li><strong>Compresión de datos:</strong> La autosimilitud de los fractales permite comprimir imágenes y
+                    datos de manera
+                    eficiente.</li>
+                <li><strong>Simulación de fenómenos naturales:</strong> Los fractales se pueden usar para simular el
+                    comportamiento de
+                    sistemas complejos como el clima, las turbulencias o el crecimiento de las plantas.</li>
+            </ul>
+            <p>
+                Los fractales son un campo fascinante que combina la belleza matemática con aplicaciones prácticas en
+                diversas áreas. La programación juega un papel fundamental en el estudio y la creación de fractales,
+                permitiendo explorar su complejidad infinita y generar imágenes y simulaciones de gran realismo.
+            </p>
+
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-section">
+            <h3>Docs</h3>
+            <ul>
+                <li><a href="./html/requirements.html">Requerimientos</a></li>
+                <li><a href="./html/narration.html">Narración</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Community</h3>
+            <ul>
+                <li><a target="_blank" href="https://cecar.edu.co/">CECAR</a></li>
+                <li><a href="./html/bibliografia.html">Bibliografía</a></li>
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 santtiag, Inc. Built with Docusaurus.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mandelbrot Set in JavaScript</title>
+    <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/code.css">
+    <link rel="stylesheet" href="../css/structure.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Navegation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Fractales</div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="./mandelbrot.html">Mandelbrot</a></li>
+                <li><a href="./julia.html">Julia</a></li>
+                <li><a href="./barnsley.html">Barnsley</a></li>
+            </ul>
+            <div class="social-links">
+                <a target="_blank" class="fa" href="https://www.instagram.com/romero_code/?next=%2F">&#xf16d;</a>
+                <a target="_blank" class="fa" href="https://github.com/santtiag">&#xf09b;</a>
+                <a target="_blank" class="fa" href="https://www.youtube.com/@romero_code">&#xf16a;</a>
+                <a target="_blank" class="fa" href="https://twitter.com/_santtiag">&#xf099;</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="content-fractal">
+        <h1>Conjunto de Mandelbrot</h1>
+        <canvas id="mandelbrotCanvas" width="480" height="320"></canvas>
+
+        <div style="width: 60rem; text-align: justify;">
+
+            <p>El conjunto de Mandelbrot es un tipo de fractal, lo que significa que presenta una estructura autosimilar
+                a diferentes escalas. Es uno de los fractales más estudiados y apreciados por su belleza y complejidad.
+            </p>
+
+            <h2>¿Cómo funciona? (Matemáticamente) </h2>
+            <p>Función iterativa: Se comienza con un punto "c" en el plano complejo. Se aplica una función matemática
+                simple a "c" repetidamente, utilizando el resultado anterior como nuevo punto para la siguiente
+                iteración. La función utilizada es:</p>
+            <code>Z<sub>n+1</sub> = Z<sub>n</sub><sup>2</sup> + c</code>
+            <p>Donde:</p>
+            <ul>
+                <li>Z<sub>n+1</sub> es el nuevo punto</li>
+                <li>Z<sub>n</sub> es el punto anterior</li>
+                <li>c es el punto inicial</li>
+            </ul>
+
+            <p>Convergencia vs Divergencia: Se observa el comportamiento de la secuencia de puntos Z<sub>n</sub>. Si la
+                secuencia converge a un valor finito, el punto "c" se considera parte del conjunto de Mandelbrot. Si la
+                secuencia diverge hacia el infinito, "c" no pertenece al conjunto.</p>
+
+            <h3>Características:</h3>
+            <ul>
+                <li>El conjunto de Mandelbrot es compacto y conectado.</li>
+                <li>Posee una frontera infinita con una complejidad fractal notable.</li>
+                <li>Contiene un infinito número de subconjuntos que también son fractales.</li>
+            </ul>
+            <br>
+            <h2>¿Cómo funciona? (Código) </h2>
+            <p>Este código en JavaScript genera una representación del fractal de Mandelbrot en un elemento canvas de
+                HTML.</p>
+
+            <pre>
+                <code>
+const canvas = document.getElementById('mandelbrotCanvas');
+const ctx = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+const max_iter = 256;
+
+function mandelbrot(c, z = { x: 0, y: 0 }, n = 0) {
+    if (n >= max_iter) {
+        return max_iter;
+    }
+
+    const z_next = {
+        x: z.x * z.x - z.y * z.y + c.x,
+        y: 2 * z.x * z.y + c.y
+    };
+
+    if (z_next.x * z_next.x + z_next.y * z_next.y > 4) {
+        return n;
+    }
+
+    return mandelbrot(c, z_next, n + 1);
+}
+
+function drawPixel(x, y) {
+    const min_x = -2, max_x = 1;
+    const min_y = -1.5, max_y = 1.5;
+    const c = {
+        x: min_x + (x / width) * (max_x - min_x),
+        y: min_y + (y / height) * (max_y - min_y)
+    };
+
+    const m = mandelbrot(c);
+    const color = m === max_iter ? 0 : 255 - Math.floor(255 * m / max_iter);
+    ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
+    ctx.fillRect(x, y, 1, 1);
+}
+
+function drawMandelbrotRow(y) {
+    if (y >= height) {
+        return;
+    }
+
+    for (let x = 0; x < width; x++) {
+        drawPixel(x, y);
+    }
+
+    // Llamada recursiva para la siguiente fila
+    requestAnimationFrame(() => drawMandelbrotRow(y + 1));
+}
+
+drawMandelbrotRow(0);
+                </code>
+            </pre>
+            <br>
+            <h3><strong>Inicialización del lienzo (canvas):</strong></h3>
+            <code>const canvas = document.getElementById('mandelbrotCanvas');</code>
+            <p>Obtiene el elemento canvas del DOM por su ID mandelbrotCanvas.</p>
+            <code>const ctx = canvas.getContext('2d');</code>
+            <p>Obtiene el contexto de dibujo 2D para el canvas, que se utiliza para dibujar en él.</p>
+            <code>const width = canvas.width;</code>
+            <code>const height = canvas.height;</code>
+            <p>Establece las variables width y height para almacenar las dimensiones del canvas.</p>
+
+            <h3><strong>Variables globales:</strong></h3>
+            <code>const max_iter = 256;</code>
+            <p>Define el número máximo de iteraciones para el cálculo de cada punto en el conjunto de Mandelbrot.</p>
+
+            <h3><strong>Función mandelbrot(c, z = { x: 0, y: 0 }, n = 0):</strong></h3>
+            <ul>
+                <li>Calcula de forma recursiva si un punto c pertenece al conjunto de Mandelbrot, donde c es un número
+                    complejo representado como un objeto con propiedades x (parte real) e y (parte imaginaria).</li>
+                <li>z es el número complejo actual en la secuencia iterativa, inicialmente { x: 0, y: 0 }.</li>
+                <li>n es el contador de iteraciones, que empieza en 0.</li>
+                <li>La función retorna el número de iteraciones que tomó para determinar si el punto c escapó del
+                    conjunto (cuando el valor absoluto de z se vuelve mayor que 2) o alcanza el max_iter.</li>
+            </ul>
+
+            <h3><strong>Función drawPixel(x, y):</strong></h3>
+            <ul>
+                <li>Dibuja un pixel en la posición (x, y) del canvas.</li>
+                <li>Convierte las coordenadas del pixel en un punto c en el plano complejo, ajustando las escalas para
+                    que encaje en el conjunto de Mandelbrot.</li>
+                <li>Usa la función mandelbrot(c) para determinar el color del pixel, basado en cuántas iteraciones se
+                    necesitaron para determinar si el punto c pertenece al conjunto de Mandelbrot.</li>
+                <li>Los puntos que pertenecen al conjunto se colorean de negro, y los que no, de blanco, con varios
+                    tonos de gris indicando el "tiempo de escape".</li>
+            </ul>
+
+            <h3><strong>Función drawMandelbrotRow(y):</strong></h3>
+            <ul>
+                <li>Dibuja una fila de pixels en el canvas, para la coordenada y dada.</li>
+                <li>Usa un bucle for para iterar a través de cada x en esa fila y llama a drawPixel(x, y) para dibujar
+                    cada pixel.</li>
+                <li>Utiliza requestAnimationFrame() para llamar a drawMandelbrotRow(y + 1) de manera recursiva,
+                    dibujando así la siguiente fila, lo cual evita bloquear el navegador y permite que la animación se
+                    muestre suavemente.</li>
+            </ul>
+
+            <p><strong>Inicio del dibujo:</strong></p>
+            <code>drawMandelbrotRow(0);</code>
+            <p>Comienza el proceso del dibujo con la primera fila del canvas.</p>
+
+            <br>
+            <h2>Rendimiento</h2>
+
+            <p>Se uso la interfaz de la herramienta de desarrollo del navegador Chrome, específicamente la pestaña de
+                "Performance" durante una sesión de perfilado (profile) de rendimiento. </p>
+
+
+            <img src="../media/perform_mandelbrot.png" alt="">
+
+            <h3>Total de Tiempo Registrado:</h3>
+            <p>La ventana capturó aproximadamente 5.16 segundos de tiempo.</p>
+
+            <h3>Carga (Loading):</h3>
+            <p>6 ms</p>
+
+            <h3>Scripting:</h3>
+            <p>472 ms, que es donde más tiempo se invierte en ejecutar el código JavaScript (mandeldrot.js), esto pasa
+                debido que aquí es donde se tiene el cálculo del fractal de Mandelbrot.</p>
+
+            <h3>Renderizado (Rendering):</h3>
+            <p>44 ms</p>
+
+            <h3>Pintado (Painting):</h3>
+            <p>68 ms, que indica el tiempo que toma el navegador en pintar los píxeles en la pantalla después de
+                calcular el fractal.</p>
+
+            <h3>Sistema (System):</h3>
+            <p>150 ms, puede incluir operaciones del sistema operativo fuera del control del navegador.</p>
+
+            <h3>Inactivo (Idle):</h3>
+            <p>4424 ms, durante este tiempo el navegador no está procesando ningún trabajo relacionado con la página.
+            </p>
+
+            <h3>Frames por Segundo (FPS):</h3>
+            <p>La barra superior muestra la tasa de FPS a lo largo de la ejecución. Hay algunas caídas significativas de
+                FPS, lo que puede indicar que el navegador está luchando para mantener una experiencia fluida durante
+                las operaciones de cálculo y el dibujo.</p>
+            <br>
+
+
+            <h2>Mejoras</h2>
+            <p>Este código puede que no sea el mejor, sin embargo, funciona muy bien, aun así, se pueden aplicar varias
+                técnicas para mejorar su rendimiento y eficiencia:</p>
+
+            <h3>Pre-calcular valores repetidos:</h3>
+            <p>Evitar calcular repetidamente valores que no cambian dentro de los bucles. Por ejemplo, los factores de
+                escala para las coordenadas x e y pueden calcularse una vez fuera de la función drawPixel.</p>
+
+            <h3>Optimización del bucle de iteración:</h3>
+            <p>En la función mandelbrot, evitar hacer cálculos innecesarios dentro del bucle de iteración. Por ejemplo,
+                el cálculo del valor absoluto de z (usado para determinar si z se escapa del límite) se puede optimizar.
+            </p>
+
+            <h3>Uso de ImageData para dibujar:</h3>
+            <p>En lugar de dibujar un píxel a la vez con fillRect, se puede utilizar ImageData para modificar un buffer
+                de imagen en memoria y luego dibujarlo en el canvas en una sola operación. Esto reduce
+                significativamente el número de llamadas a la API de dibujo y puede mejorar el rendimiento.</p>
+
+            <h3>Paralelización:</h3>
+            <p>Si bien JavaScript en el navegador es principalmente de un solo hilo, se puede hacer uso de Web Workers
+                para calcular los puntos del fractal en paralelo. Esto puede acelerar el cálculo al utilizar múltiples
+                núcleos del procesador.</p>
+
+            <h3>Uso de una paleta de colores precalculada:</h3>
+            <p>En lugar de calcular el color para cada punto en cada iteración, se puede crear una paleta de colores una
+                sola vez y reutilizarla. Esto es especialmente útil si el número de colores es significativamente menor
+                que el número de iteraciones.</p>
+
+            <h3>Uso de técnicas matemáticas avanzadas:</h3>
+            <p>Implementar optimizaciones matemáticas como el algoritmo de period checking para reducir el número de
+                iteraciones necesarias para puntos que caen dentro de ciertas áreas del conjunto.</p>
+
+            <h3>Caching de resultados:</h3>
+            <p>Si ciertas áreas del conjunto se calculan con frecuencia, se pueden cachear los resultados para evitar
+                recalculaciones innecesarias.</p>
+            <br>
+            <br>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-section">
+            <h3>Docs</h3>
+            <ul>
+                <li><a href="./requirements.html">Requerimientos</a></li>
+                <li><a href="./narration.html">Narración</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Community</h3>
+            <ul>
+                <li><a target="_blank" href="https://cecar.edu.co/">CECAR</a></li>
+                <li><a href="./bibliografia.html">Bibliografía</a></li>
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 santtiag, Inc. Built with Docusaurus.</p>
+        </div>
+    </footer>
+
+
+    <script src="../js/mandelbrot.js"></script>
+</body>
+
+</html>

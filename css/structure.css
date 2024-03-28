@@ -1,0 +1,12 @@
+canvas {
+    border: 1px solid black;
+}
+
+.content-fractal {
+    font-size: 18px;
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
