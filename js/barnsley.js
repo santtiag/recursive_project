@@ -3,6 +3,33 @@ const ctx = canvas.getContext('2d');
 const width = canvas.width;
 const height = canvas.height;
 
+let baseColor = { r: 0, g: 128, b: 0 };
+
+document.getElementById('depth').addEventListener('input', function() {
+    depth = this.value;
+    ctx.clearRect(0, 0, width, height);
+    barnsleyFern(0, 0, depth);
+});
+
+document.getElementById('colorR').addEventListener('input', function() {
+    baseColor.r = parseInt(this.value);
+    ctx.clearRect(0, 0, width, height);
+    barnsleyFern(0, 0, depth);
+});
+
+document.getElementById('colorG').addEventListener('input', function() {
+    baseColor.g = parseInt(this.value);
+    ctx.clearRect(0, 0, width, height);
+    barnsleyFern(0, 0, depth);
+});
+
+document.getElementById('colorB').addEventListener('input', function() {
+    baseColor.b = parseInt(this.value);
+    ctx.clearRect(0, 0, width, height);
+    barnsleyFern(0, 0, depth);
+});
+
+
 function barnsleyFern(x, y, depth) {
     if (depth === 0) return;
 
@@ -26,11 +53,11 @@ function barnsleyFern(x, y, depth) {
     const plotX = width / 2 + nextX * width / 10;
     const plotY = height - nextY * height / 12;
 
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = `rgb(${baseColor.r}, ${baseColor.g}, ${baseColor.b})`;
     ctx.fillRect(plotX, plotY, 1, 1);
 
     barnsleyFern(nextX, nextY, depth - 1);
 }
 
-barnsleyFern(0, 0, 5000); 
+barnsleyFern(0, 0, 5000);
 

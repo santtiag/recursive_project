@@ -2,7 +2,34 @@ const canvas = document.getElementById('mandelbrotCanvas');
 const ctx = canvas.getContext('2d');
 const width = canvas.width;
 const height = canvas.height;
-const max_iter = 256;
+
+
+let baseColor = { r: 0, g: 0, b: 0 };
+
+
+document.getElementById('iterations').addEventListener('input', function() {
+    max_iter = this.value;
+    drawMandelbrotRow(0);
+});
+
+
+document.getElementById('colorR').addEventListener('input', function() {
+    baseColor.r = parseInt(this.value);
+    drawMandelbrotRow(0);
+});
+
+document.getElementById('colorG').addEventListener('input', function() {
+    baseColor.g = parseInt(this.value);
+    drawMandelbrotRow(0);
+});
+
+document.getElementById('colorB').addEventListener('input', function() {
+    baseColor.b = parseInt(this.value);
+    drawMandelbrotRow(0);
+});
+
+
+
 
 function mandelbrot(c, z = { x: 0, y: 0 }, n = 0) {
     if (n >= max_iter) {
@@ -30,8 +57,9 @@ function drawPixel(x, y) {
     };
 
     const m = mandelbrot(c);
-    const color = m === max_iter ? 0 : 255 - Math.floor(255 * m / max_iter);
-    ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
+    const scale = m === max_iter ? 0 : 255 - Math.floor(255 * m / max_iter);
+    const color = `rgb(${baseColor.r + scale % 255}, ${baseColor.g + scale % 255}, ${baseColor.b + scale % 255})`;
+    ctx.fillStyle = color;
     ctx.fillRect(x, y, 1, 1);
 }
 
